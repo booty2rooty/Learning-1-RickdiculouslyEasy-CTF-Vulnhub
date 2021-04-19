@@ -1,28 +1,22 @@
-**MY FIRST BOOT2ROOT LEARNING EXPERIENCE**
+# Introduction
 
-Documentation of thought process and learning notes
-
-# A. Introduction
-
-My first attempt at a boot2root machine based on recommendations on reddit, and more importantly, a Rick and Morty themed one at that.
+My first attempt at a purposefully vulnerable machine from vulnhub, based on recommendations on reddit, and more importantly, a Rick and Morty themed one at that.
 
 This is the documentation of my thought process and hopefully the start of an incremental learning journey into the world of CTFs, and the cybersecurity domain.
 
 
-# B. Additional Information
+# Additional Information
 
-Vulnerable machine used: [RICKDICULOUSLYEASY: 1](https://www.vulnhub.com/entry/rickdiculouslyeasy-1,207/)
+**Vulnerable machine used:** [RickdiculouslyEasy: 1](https://www.vulnhub.com/entry/rickdiculouslyeasy-1,207/)
+
+**Description from author**
 
 _This is a fedora server vm, created with virtualbox._
-
 _It is a very simple Rick and Morty themed boot to root._
-
 _There are 130 points worth of flags available (each flag has its points recorded with it), you should also get root._
-
 _It’s designed to be a beginner ctf, if you’re new to pen testing, check it out!_
 
-
-**Walkthroughs used for learning process:**
+**Walkthroughs / guides used for learning process:**
 
 [https://medium.com/pentestsec/rickdiculouslyeasy-vulnhub-16a54ac2a8e1](https://medium.com/pentestsec/rickdiculouslyeasy-vulnhub-16a54ac2a8e1)
 
@@ -34,7 +28,7 @@ _It’s designed to be a beginner ctf, if you’re new to pen testing, check it 
 Internal Network with 10.10.10.0/24 for network address, and DHCP range of 10.10.10.100 -150.
 
 
-# C. Initial Host Discovery
+# Initial Host Discovery
 
 Already know VM has IP address of 10.10.10.101 from VirtualBox settings
 
@@ -58,7 +52,7 @@ Nmap 10.10.10.101 -p- sC for deeper probe into the host
 
 ![image004](https://user-images.githubusercontent.com/82624344/115135315-47597080-a04a-11eb-9440-8c400dc2ee1e.png)
 
-## Learning Notes
+**Learning Notes**
 
 - -p- is used to specify scanning all TCP ports (port range 1-65535)
 - -sC (use all scripts) is used to identify specific applications listening on ports, scan for known exploits agains those applications, and scan for common misconfigurations of services
@@ -70,13 +64,13 @@ Nmap 10.10.10.101 -p- sC for deeper probe into the host
 - For purpose of home lab, could use options: -p- -T4 -sS first before doing -sC?
 
 
-# D. Scan Results
+# Scan Results
 
 _Nmap scan report for 10.10.10.101_
 
 _PORT STATE SERVICE_
 
-_21/tcp open ftp; allows anonymous FTP login, has FLAG inside_
+_21/tcp open ftp - allows anonymous FTP login, has FLAG inside_
 
 _22/tcp open ssh - SSH, so probably need some sort of credentials?_
 
@@ -91,33 +85,33 @@ _22222/tcp open easyengine - not sure what this means, but SSH_
 _60000/tcp open unknown_
 
 
-# E. Starting the Process
+# Starting the Process
 
 Thought process for sequence of ports to test:
 
-60000  21  13337  9090  80  SSH ports (22 and 22222)
+60000 - 21 - 13337 - 9090 - 80 - SSH ports (22 and 22222)
 
 Based on what I think would be the easiest way to navigate around the scan results.
 
 
-# F. Port 60000
+# Port 60000
 
-Since it’s ,unknown,, first instinct is to **netcat** the port, which gives welcome message of ,Welcome to Ricks half baked reverse shell…, and a shell? (no idea what this really means at the moment)
+Since it’s unknown, first instinct is to **netcat** the port, which gives welcome message of "Welcome to Ricks half baked reverse shell…" and a shell? (no idea what this really means at the moment)
 
 ![image006](https://user-images.githubusercontent.com/82624344/115135335-63f5a880-a04a-11eb-9b50-9bfda51e41bd.png)
 
-No idea what I’m supposed to do after getting the flag or if in a real-world situation there’ll be something more I should be exploring, but felt learning objectives were met and moved on first.
+Not sure what I’m supposed to do after getting the flag or if in a real-world situation there’ll be something more I should be exploring, but felt learning objectives were met and moved on first.
 
 FLAG{Flip the pickle Morty!} – 10/130Points
 
-## Learning Notes:
+**Learning Notes:**
 
 - -nc (netcat) is a network utility that uses TCP and UDP connections to read / write in a network. It can do port scanning, banner grabbing, transferring a file, and generating a reverse connection to name a few
 - It acts as a simple TCP/UDP/SCTP/SSL client for interacting with web servers. My current understanding is that it’s useful for banner grabbing for CTF VMs.
 - Banner Grabbing is useful for intel-reconnaissance. It gets software banner information and often exposes critical information, and can reveal insecure and vulnerable applications which could lead to service exploitation.
 
 
-# G. Port 21 (Anonymous login FTP)
+# Port 21 (Anonymous login FTP)
 
 Remembered reading something previously about using Metasploit for vsFTPd versions but did not return a result for the version that the VM is running (3.0.3)
 
@@ -129,7 +123,7 @@ Realized after that again, that the service allowed for anonymous logins, and th
 
 FLAG{Whoa this is unexpected} – 20/130 Points
 
-## Learning notes:
+**Learning notes:**
 
 - You can use ls in an FTP session but can’t use cat. Use **get** to download the file locally first before utilizing the cat command.
 
@@ -142,12 +136,12 @@ Seeing as it’s another port being utilized by an unknown service, first instin
 
 FLAG:{TheyFoundMyBackDoorMorty} - 30/130 Points
 
-## Learning notes:
+**Learning notes:**
 
 - **Netcad** will be my friend. Will Google more on its actual real-world / practical usages.
 
 
-# I. Port 9090 (SSL = Web Server?)
+# Port 9090 (SSL = Web Server?)
 
 Easy and straight forward enough. Tried looking at the source code to find more additional information, but my current limited knowledge on web development tells me that there is nothing of interest left on this service.
 
@@ -165,7 +159,7 @@ Script kiddie in me decided that trying SSLye was worth a shot, but didn’t ret
 
 FLAG {There is no Zeus, in your face!} – 40/130 Points
 
-## Learning notes:
+**Learning notes:**
 
 - Secure Sockets Layer (SSL) is a standard security technology for establishing an encrypted link between a server and a client—typically a web server (website) and a browser, or a mail server and a mail client (e.g., Outlook).
 
@@ -174,7 +168,7 @@ FLAG {There is no Zeus, in your face!} – 40/130 Points
 - Heartbleed vulnerability link: [https://www.vox.com/2014/6/19/18076318/heartbleed](https://www.vox.com/2014/6/19/18076318/heartbleed)
 
 
-# J. Port 80 (HTTP) – Part 1
+# Port 80 (HTTP) – Part 1
 
 Initially the website and source code did not provide any useful information.
 
@@ -206,12 +200,12 @@ I now have a password called ,winter,, but no other credentials to use it with. 
 
 FLAG{Yeah d- just don’t do it.} – 50/130 Points
 
-## Learning notes:
+**Learning notes:**
 
 - Always look at source code for crucial information that may be purposefully hidden by the creators of vulnerable machines, or accidentally leftover by developers in real-world scenarios.
 
 
-# K. Port 80 (HTTP) – Part 2
+# Port 80 (HTTP) – Part 2
 
 Attempting to figure out what functions the 2 cgi applications could do.
 
@@ -251,7 +245,7 @@ Now have 3 users: RickSanchez, Morty, and Summer.
 
 ![image030](https://user-images.githubusercontent.com/82624344/115135407-d36b9800-a04a-11eb-90a5-13c1c8800526.png)
 
-## Learning notes:
+**Learning notes:**
 
 - CGI (Common Gateway Interface) is a standard way of running programs from a Web server. Often, CGI programs are used to generate pages dynamically or to perform some other action when someone fills out an HTML form and clicks the submit button.
 
@@ -264,7 +258,7 @@ Now have 3 users: RickSanchez, Morty, and Summer.
 - **more** command lets you view text files or other output in a scrollable manner. It displays the text one screenful at a time, and lets you scroll backwards and forwards through the text, and even lets you search the text.
 
 
-# L. Ports 22 and 22222 (SSH) – Part 1
+# Ports 22 and 22222 (SSH) – Part 1
 
 I have a list of users and 1 password. I create a user.txt file as a list for **hydra** to match with password ,winter,.
 
@@ -284,7 +278,7 @@ With matched credentials and successful login, begin to start exploring the serv
 
 FLAG{Get off the high road Summer!} – 60/130 Points
 
-## Learning notes:
+**Learning notes:**
 
 - Blocks of multiple lines of text can be written in a single command when using the \&lt;\&lt;EOL command (heredoc).
 
@@ -295,7 +289,7 @@ FLAG{Get off the high road Summer!} – 60/130 Points
 - Metasploit module ,auxiliary/scanner/ssh/ssh\_login, can be used to brute force and open a shell as well. (More info at [here](https://www.offensive-security.com/metasploit-unleashed/scanner-ssh-auxiliary-modules/) and [here](https://null-byte.wonderhowto.com/how-to/get-root-with-metasploits-local-exploit-suggester-0199463/))
 
 
-# M. Ports 22 and 22222 (SSH) – Part 2
+# Ports 22 and 22222 (SSH) – Part 2
 
 Further digging showed that Summer has access to Rick and Morty’s respective home directories.
 
@@ -319,7 +313,7 @@ Output of the file also states that the flag is a possible password for another 
 
 FLAG: {131333} – 80/130 Points
 
-## Learning notes:
+**Learning notes:**
 
 - SSH or Secure Shell is a protocol that allows a secure way to access remote computer. SSH implementation comes with scp utility for remote file transfer that utilises SSH protocol.
 
@@ -328,7 +322,7 @@ FLAG: {131333} – 80/130 Points
 - Linux strings command is used to return the string characters into files. It primarily focuses on determining the contents of and extracting text from the binary files (non-text file).
 
 
-# N. Ports 22 and 22222 (SSH) – Part 3
+# Ports 22 and 22222 (SSH) – Part 3
 
 The directory that says it doesn’t contain any flags, surprisingly did not contain any flags.
 
@@ -336,7 +330,7 @@ The directory that says it doesn’t contain any flags, surprisingly did not con
 
 ![image048](https://user-images.githubusercontent.com/82624344/115135442-0a41ae00-a04b-11eb-9981-0c65362ce216.png)
 
-Dir RICKS\_SAFE on the other hand, seems to have a file and looks like an executable that we do not have permissions to run (No permission to e **x** ecute other than the owner).
+Dir RICKS_SAFE on the other hand, seems to have a file and looks like an executable that we do not have permissions to run (No permission to e **x** ecute other than the owner).
 
 Tried downloading it to the Kali machine using the scp command but resulted in an error instead. I chalk it up as the Kali machine just missing something.
 
@@ -356,7 +350,7 @@ Followed the steps and got another flag, followed by a clue for another password
 
 FLAG{And Awwwaaaaayyyy we Go!} – 100/130 Points
 
-## Learning notes:
+**Learning notes:**
 
 - Example: The permission in the command line is displayed as: \_rwxrwxrwx 1 owner:group
 
@@ -368,7 +362,7 @@ FLAG{And Awwwaaaaayyyy we Go!} – 100/130 Points
 - The last piece is the Owner and Group assignment formatted as Owner:Group.
 
 
-# O. Ports 22 and 22222 (SSH) – Part 4
+# Ports 22 and 22222 (SSH) – Part 4
 
 The previous clues indicated the password would be (Upper Case)(Digit)The/Flesh/Curtains.
 
@@ -396,7 +390,7 @@ And with that, finally obtained the last flag for a full 130 points, and some PT
 
 FLAG: {Ionic Defibrillator} – 130/130 points
 
-## Learning notes:
+**Learning notes:**
 
 - Crunch is a wordlist generator where you can specify a standard character set or a character set you specify. crunch can generate all possible combinations and permutations.
 
@@ -413,7 +407,7 @@ FLAG: {Ionic Defibrillator} – 130/130 points
 - The sudo -l list user’s privileges or check a specific command. Using -l twice outputs a longer format.
 
 
-# P. Conclusion
+# Conclusion
 
 As my first CTF style machine, I found the pace to be just nice in grasping the basics for boot2root. There are still many commands and logics that I would like to commit to the common-sense portion of my brain. The entire process and documentation took about 6 hours in total.
 
